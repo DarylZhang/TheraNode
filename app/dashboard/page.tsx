@@ -1,13 +1,12 @@
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+// import { getServerSession } from "next-auth/next";
+// import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Link from "next/link";
 import { Palette, Calendar, MessageSquare, LogOut, ChevronRight, Sparkles } from "lucide-react";
 import Image from "next/image";
 
+// Bypassing getServerSession for public access and to avoid Vercel server-side exceptions
 export default async function DashboardPage() {
-    const session = await getServerSession(authOptions);
-
-    const user = session?.user || {
+    const user = {
         name: "Therapy Guest",
         email: "guest@example.com",
         image: null,
