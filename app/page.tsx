@@ -23,9 +23,9 @@ export default function LandingPage() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <Link href="/api/auth/signin">
+          <Link href="/dashboard">
             <button className="text-sm font-medium hover:text-zinc-600 transition-colors">
-              Sign In
+              Enter App
             </button>
           </Link>
         </div>
@@ -47,7 +47,7 @@ export default function LandingPage() {
             reflection, and emotional processing.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/api/auth/signin">
+            <Link href="/dashboard">
               <button className="px-8 py-3 bg-zinc-900 text-white rounded-full font-medium flex items-center gap-2 hover:bg-zinc-800 transition-all transform hover:scale-105">
                 Get Started <ArrowRight className="w-4 h-4" />
               </button>
