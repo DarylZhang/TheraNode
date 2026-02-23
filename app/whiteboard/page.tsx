@@ -1,10 +1,20 @@
 "use client";
 
-import { Tldraw } from 'tldraw';
 import 'tldraw/tldraw.css';
 import { ChevronLeft, Sparkles, Send } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
+
+// Dynamic import with ssr: false is necessary for tldraw in Next.js
+const Tldraw = dynamic(async () => (await import('tldraw')).Tldraw, {
+    ssr: false,
+    loading: () => (
+        <div className="flex-1 flex items-center justify-center bg-zinc-50">
+            <div className="text-zinc-400 font-medium animate-pulse">Loading drawing board...</div>
+        </div>
+    )
+});
 
 export default function WhiteboardPage() {
     const [chatInput, setChatInput] = useState("");
@@ -68,8 +78,8 @@ export default function WhiteboardPage() {
                         {messages.map((m, i) => (
                             <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                 <div className={`max-w-[85%] p-3 rounded-2xl text-sm ${m.role === 'user'
-                                        ? 'bg-zinc-900 text-white rounded-tr-none shadow-sm'
-                                        : 'bg-white text-zinc-700 border border-zinc-100 rounded-tl-none shadow-sm'
+                                    ? 'bg-zinc-900 text-white rounded-tr-none shadow-sm'
+                                    : 'bg-white text-zinc-700 border border-zinc-100 rounded-tl-none shadow-sm'
                                     }`}>
                                     {m.text}
                                 </div>
