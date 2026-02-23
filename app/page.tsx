@@ -17,8 +17,8 @@ export default function LandingPage() {
           <Link href="/dashboard" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">
             Dashboard
           </Link>
-          <Link href="/dashboard#modules" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">
-            Modules
+          <Link href="/dashboard#playspace" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">
+            Playspace
           </Link>
         </nav>
 

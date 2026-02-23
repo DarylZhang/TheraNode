@@ -1,11 +1,10 @@
-import { withAuth } from "next-auth/middleware";
+// Middleware disabled temporarily for public access on Vercel
+import { NextResponse } from 'next/server';
 
-export default withAuth({
-    callbacks: {
-        authorized: ({ token }) => !!token,
-    },
-});
+export default function middleware() {
+    return NextResponse.next();
+}
 
 export const config = {
-    matcher: ["/dashboard/:path*", "/playspace/:path*"],
+    matcher: [],
 };

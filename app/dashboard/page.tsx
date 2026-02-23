@@ -64,10 +64,10 @@ export default async function DashboardPage() {
                         <p className="text-zinc-500 italic">"Creativity is intelligence having fun." — Albert Einstein</p>
                     </header>
 
-                    <div id="modules" className="space-y-8">
+                    <div id="playspace" className="space-y-8">
                         <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-2">
                             <Palette className="w-5 h-5" />
-                            Interactive Therapy Modules
+                            Interactive Playspace
                         </h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
