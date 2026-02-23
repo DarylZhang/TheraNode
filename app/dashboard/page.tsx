@@ -1,7 +1,5 @@
-// import { getServerSession } from "next-auth/next";
-// import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Link from "next/link";
-import { Palette, Calendar, MessageSquare, LogOut, ChevronRight, Sparkles } from "lucide-react";
+import { Palette, Calendar, MessageSquare, ChevronRight, Sparkles } from "lucide-react";
 import Image from "next/image";
 
 // Bypassing getServerSession for public access and to avoid Vercel server-side exceptions
@@ -48,9 +46,9 @@ export default async function DashboardPage() {
                             <p className="text-xs text-zinc-500 truncate">{user.email}</p>
                         </div>
                     </div>
-                    <Link href="/api/auth/signout" className="flex items-center gap-3 px-3 py-2 text-zinc-600 hover:text-red-600 transition-colors text-sm">
-                        <LogOut className="w-4 h-4" />
-                        Sign Out
+                    <Link href="/" className="flex items-center gap-3 px-3 py-2 text-zinc-600 hover:text-zinc-900 transition-colors text-sm">
+                        <span className="w-4 h-4 text-xs flex items-center justify-center border border-zinc-400 rounded">←</span>
+                        Back to Home
                     </Link>
                 </div>
             </aside>
