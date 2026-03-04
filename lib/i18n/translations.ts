@@ -50,6 +50,11 @@ export const translations = {
             suggestion: "建议：写一段“身体的信”，把那种沉重感表达出来",
             toStudio: "转入写作",
             inputPlaceholder: "在此输入你的感受...",
+            newSession: "新会话",
+            noSessions: "暂无会话",
+            startPrompt: "分享你此刻的感受...",
+            selectSessionPrompt: "请先新建或选择一个会话以开始交流",
+            aiDialogue: "AI 对话",
         },
         studio: {
             title: "艺术工作室",
@@ -138,6 +143,11 @@ export const translations = {
             suggestion: "Suggestion: Write a 'Letter to your Body' to express that heaviness.",
             toStudio: "Go to Studio",
             inputPlaceholder: "Type your feelings here...",
+            newSession: "New Session",
+            noSessions: "No sessions yet",
+            startPrompt: "Share how you feel right now...",
+            selectSessionPrompt: "Please create or select a session to start chatting",
+            aiDialogue: "AI Dialogue",
         },
         studio: {
             title: "Art Studio",
