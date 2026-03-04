@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   description: "A safe space for your mind through digital art therapy.",
 };
 
+import { I18nProvider } from "@/lib/i18n/I18nContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,7 +30,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <I18nProvider>
+          {children}
+        </I18nProvider>
       </body>
     </html>
   );
