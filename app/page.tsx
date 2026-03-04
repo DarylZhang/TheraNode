@@ -1,9 +1,15 @@
+"use client";
+
 import Link from "next/link";
-import { ArrowRight, Sparkles, Heart, Shield } from "lucide-react";
+import { ArrowRight, Sparkles, LayoutDashboard, MessageSquare, PenTool } from "lucide-react";
+import { useI18n } from "@/lib/i18n/I18nContext";
+import { cn } from "@/lib/utils";
 
 export default function LandingPage() {
+  const { t, lang, setLang } = useI18n();
+
   return (
-    <div className="min-h-screen bg-zinc-50 flex flex-col">
+    <div className="min-h-screen bg-zinc-50 flex flex-col font-sans">
       {/* Header */}
       <header className="px-6 py-4 flex justify-between items-center bg-white/50 backdrop-blur-md border-b border-zinc-200 sticky top-0 z-50">
         <div className="flex items-center gap-2">
@@ -13,20 +19,31 @@ export default function LandingPage() {
           <span className="font-semibold text-xl tracking-tight text-zinc-900">TheraNode</span>
         </div>
 
-        <nav className="hidden md:flex items-center gap-8">
-          <Link href="/dashboard" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">
-            Dashboard
-          </Link>
-          <Link href="/dashboard#playspace" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">
-            Playspace
-          </Link>
-        </nav>
-
-        <div className="flex items-center gap-4">
-          <Link href="/dashboard">
-            <button className="text-sm font-medium hover:text-zinc-600 transition-colors">
-              Enter App
+        <div className="flex items-center gap-6">
+          {/* Language Switcher */}
+          <div className="flex items-center bg-zinc-100 rounded-full p-1 border border-zinc-200">
+            <button
+              onClick={() => setLang("zh")}
+              className={cn(
+                "px-3 py-1 text-xs font-medium rounded-full transition-all whitespace-nowrap",
+                lang === "zh" ? "bg-white text-zinc-900 shadow-sm" : "text-zinc-500 hover:text-zinc-900"
+              )}
+            >
+              中
             </button>
+            <button
+              onClick={() => setLang("en")}
+              className={cn(
+                "px-3 py-1 text-xs font-medium rounded-full transition-all whitespace-nowrap",
+                lang === "en" ? "bg-white text-zinc-900 shadow-sm" : "text-zinc-500 hover:text-zinc-900"
+              )}
+            >
+              EN
+            </button>
+          </div>
+
+          <Link href="/dashboard" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">
+            {t('landing.enterApp')}
           </Link>
         </div>
       </header>
@@ -39,50 +56,54 @@ export default function LandingPage() {
             <span>Digital Mindfulness & Art Therapy</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold text-zinc-900 tracking-tight mb-6 leading-tight">
-            A safe space for <br />
-            <span className="text-zinc-500 italic">your creative mind.</span>
+            {t('landing.heroTitle')} <br />
+            <span className="text-zinc-500 italic">{t('landing.heroTitleItalic')}</span>
           </h1>
           <p className="text-lg text-zinc-600 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Experience therapeutic art creation in a digital playspace designed for mindfulness,
-            reflection, and emotional processing.
+            {t('landing.heroSubtitle')}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/dashboard">
               <button className="px-8 py-3 bg-zinc-900 text-white rounded-full font-medium flex items-center gap-2 hover:bg-zinc-800 transition-all transform hover:scale-105">
-                Get Started <ArrowRight className="w-4 h-4" />
+                {t('landing.getStarted')} <ArrowRight className="w-4 h-4" />
               </button>
             </Link>
           </div>
         </section>
 
-        {/* Value Props */}
+        {/* Feature Cards */}
         <section className="px-6 py-20 bg-white">
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="space-y-4">
-              <div className="w-12 h-12 bg-zinc-50 rounded-2xl flex items-center justify-center text-zinc-900 border border-zinc-100">
-                <Shield className="w-6 h-6" />
+            {/* Dashboard */}
+            <div className="space-y-4 p-8 rounded-[2rem] bg-zinc-50 border border-zinc-100 hover:shadow-xl transition-all group">
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-zinc-900 border border-zinc-100 shadow-sm group-hover:bg-zinc-900 group-hover:text-white transition-colors">
+                <LayoutDashboard className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-semibold text-zinc-900">Private & Secure</h3>
+              <h3 className="text-xl font-semibold text-zinc-900">{t('landing.features.dashboardTitle')}</h3>
               <p className="text-zinc-600 leading-relaxed">
-                Your therapeutic journey is yours alone. We prioritize your privacy and data security.
+                {t('landing.features.dashboardDesc')}
               </p>
             </div>
-            <div className="space-y-4">
-              <div className="w-12 h-12 bg-zinc-50 rounded-2xl flex items-center justify-center text-zinc-900 border border-zinc-100">
-                <Heart className="w-6 h-6" />
+
+            {/* Resonance */}
+            <div className="space-y-4 p-8 rounded-[2rem] bg-zinc-50 border border-zinc-100 hover:shadow-xl transition-all group">
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-zinc-900 border border-zinc-100 shadow-sm group-hover:bg-zinc-900 group-hover:text-white transition-colors">
+                <MessageSquare className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-semibold text-zinc-900">Interactive Therapy</h3>
+              <h3 className="text-xl font-semibold text-zinc-900">{t('landing.features.resonanceTitle')}</h3>
               <p className="text-zinc-600 leading-relaxed">
-                Move abstract stones and emotions in our 2D playspace to visualize your thoughts.
+                {t('landing.features.resonanceDesc')}
               </p>
             </div>
-            <div className="space-y-4">
-              <div className="w-12 h-12 bg-zinc-50 rounded-2xl flex items-center justify-center text-zinc-900 border border-zinc-100">
-                <Sparkles className="w-6 h-6" />
+
+            {/* Studio */}
+            <div className="space-y-4 p-8 rounded-[2rem] bg-zinc-50 border border-zinc-100 hover:shadow-xl transition-all group">
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-zinc-900 border border-zinc-100 shadow-sm group-hover:bg-zinc-900 group-hover:text-white transition-colors">
+                <PenTool className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-semibold text-zinc-900">AI Copilot</h3>
+              <h3 className="text-xl font-semibold text-zinc-900">{t('landing.features.studioTitle')}</h3>
               <p className="text-zinc-600 leading-relaxed">
-                A gentle companion to guide you through your art therapy exercises.
+                {t('landing.features.studioDesc')}
               </p>
             </div>
           </div>
@@ -92,7 +113,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="px-6 py-12 border-t border-zinc-200 bg-zinc-50 text-center">
         <p className="text-sm text-zinc-500">
-          © 2024 TheraNode. Built for mindfulness.
+          {t('landing.footer')}
         </p>
       </footer>
     </div>

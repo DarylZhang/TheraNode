@@ -69,6 +69,22 @@ export const translations = {
             contentPlaceholder: "开始你的创作之旅...",
             generatePoetry: "生成诗歌版本",
             generatePolish: "生成润色建议",
+        },
+        landing: {
+            heroTitle: "一个属于你心灵的",
+            heroTitleItalic: "安全空间",
+            heroSubtitle: "在专为正念、反思和情绪处理而设计的数字空间中，体验艺术疗愈。",
+            getStarted: "开始体验",
+            enterApp: "进入应用",
+            features: {
+                dashboardTitle: "情绪追踪与分析",
+                dashboardDesc: "可视化你的每日情绪指数和趋势，通过 AI 建议找回内心的秩序。",
+                resonanceTitle: "AI 情绪共振",
+                resonanceDesc: "与 AI Copilot 进行深度对话，实时检测情绪并获得创意提示。",
+                studioTitle: "疗愈艺术工作室",
+                studioDesc: "通过日记写作和诗歌生成，将难以言表的情绪转化为艺术作品。",
+            },
+            footer: "© 2024 TheraNode. 为正念而建。"
         }
     },
     en: {
@@ -141,6 +157,22 @@ export const translations = {
             contentPlaceholder: "Start your creative journey...",
             generatePoetry: "Generate Poem",
             generatePolish: "Get Suggestions",
+        },
+        landing: {
+            heroTitle: "A safe space for",
+            heroTitleItalic: "your creative mind.",
+            heroSubtitle: "Experience therapeutic art creation in a digital playspace designed for mindfulness, reflection, and emotional processing.",
+            getStarted: "Get Started",
+            enterApp: "Enter App",
+            features: {
+                dashboardTitle: "Mood Tracking & Analytics",
+                dashboardDesc: "Visualize your daily mood index and trends, and find inner order through AI-driven suggestions.",
+                resonanceTitle: "AI Emotional Resonance",
+                resonanceDesc: "Engage in deep dialogue with AI Copilot, detecting emotions in real-time with creative prompts.",
+                studioTitle: "Healing Art Studio",
+                studioDesc: "Transform unspeakable emotions into art through journal writing and poetry generation.",
+            },
+            footer: "© 2024 TheraNode. Built for mindfulness."
         }
     }
 };
