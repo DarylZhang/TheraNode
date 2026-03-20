@@ -28,3 +28,15 @@ body {
 button {
   cursor: pointer;
 }
+
+/* 移动端底部安全区域适配 */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 防止移动端内容被输入法顶起时布局跳动 */
+@supports (height: 100dvh) {
+  .h-dvh {
+    height: 100dvh;
+  }
+}

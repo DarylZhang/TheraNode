@@ -20,26 +20,27 @@ export default function DashboardPage() {
     const user = { name: "Daryl" };
 
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <header>
-                <h1 className="text-3xl font-bold text-zinc-900 tracking-tight">{t('dashboard.greeting')}, {user.name}</h1>
-                <p className="text-zinc-500 mt-1 italic italic">"{t('dashboard.subtitle')}"</p>
+                <h1 className="text-2xl md:text-3xl font-bold text-zinc-900 tracking-tight">{t('dashboard.greeting')}, {user.name}</h1>
+                <p className="text-zinc-500 mt-1 italic text-sm md:text-base">"{t('dashboard.subtitle')}"</p>
             </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 {/* Mood State Card */}
-                <div className="bg-white border border-zinc-200 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex justify-between items-start mb-6">
-                        <div>
+                <div className="bg-white border border-zinc-200 rounded-3xl p-5 md:p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex justify-between items-start mb-5 md:mb-6 gap-3">
+                        <div className="min-w-0">
                             <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-1">{t('dashboard.moodState')}</h3>
                             <div className="flex items-center gap-2">
-                                <Smile className="w-6 h-6 text-yellow-500" />
-                                <span className="text-2xl font-bold text-zinc-900">{t('dashboard.moodIndex')}: 72 / 100</span>
+                                <Smile className="w-5 h-5 md:w-6 md:h-6 text-yellow-500 shrink-0" />
+                                <span className="text-lg md:text-2xl font-bold text-zinc-900 truncate">{t('dashboard.moodIndex')}: 72 / 100</span>
                             </div>
                         </div>
-                        <div className="bg-green-50 px-3 py-1 rounded-full text-xs font-medium text-green-600 flex items-center gap-1">
+                        <div className="bg-green-50 px-2.5 py-1 rounded-full text-xs font-medium text-green-600 flex items-center gap-1 shrink-0">
                             <TrendingUp className="w-3 h-3" />
-                            {t('dashboard.weeklyTrend')}
+                            <span className="hidden sm:inline">{t('dashboard.weeklyTrend')}</span>
+                            <span className="sm:hidden">↑</span>
                         </div>
                     </div>
 
@@ -59,7 +60,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* AI Recommendation Card */}
-                <div className="bg-zinc-900 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden group">
+                <div className="bg-zinc-900 rounded-3xl p-5 md:p-6 text-white shadow-lg relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
                         <Sparkles className="w-32 h-32" />
                     </div>
@@ -85,18 +86,18 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Creation Reminder Card */}
-                <div className="bg-white border border-zinc-200 rounded-3xl p-6 shadow-sm flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-500">
-                            <PenTool className="w-7 h-7" />
+                <div className="bg-white border border-zinc-200 rounded-3xl p-5 md:p-6 shadow-sm flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 md:gap-4 min-w-0">
+                        <div className="w-12 h-12 md:w-14 md:h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-500 shrink-0">
+                            <PenTool className="w-6 h-6 md:w-7 md:h-7" />
                         </div>
-                        <div>
-                            <h3 className="text-lg font-bold text-zinc-900">{t('dashboard.creationReminder')}</h3>
-                            <p className="text-zinc-500">{t('dashboard.reminderText', { days: 3 })}</p>
+                        <div className="min-w-0">
+                            <h3 className="text-base md:text-lg font-bold text-zinc-900 truncate">{t('dashboard.creationReminder')}</h3>
+                            <p className="text-zinc-500 text-sm truncate">{t('dashboard.reminderText', { days: 3 })}</p>
                         </div>
                     </div>
-                    <Link href="/studio?tab=diary">
-                        <button className="px-5 py-2.5 border border-zinc-200 rounded-xl text-sm font-medium hover:bg-zinc-50 transition-colors">
+                    <Link href="/studio?tab=diary" className="shrink-0">
+                        <button className="px-3 md:px-5 py-2 md:py-2.5 border border-zinc-200 rounded-xl text-sm font-medium hover:bg-zinc-50 transition-colors whitespace-nowrap">
                             {t('dashboard.continueWriting')}
                         </button>
                     </Link>

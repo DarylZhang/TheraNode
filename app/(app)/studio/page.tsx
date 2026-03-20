@@ -20,17 +20,17 @@ export default function StudioPage() {
     const [activeTab, setActiveTab] = useState("diary");
 
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <header className="flex items-center justify-between">
+        <div className="space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-zinc-900 tracking-tight">{t('studio.title')}</h1>
-                    <p className="text-zinc-500 mt-1 italic">"{t('studio.subtitle')}"</p>
+                    <h1 className="text-2xl md:text-3xl font-bold text-zinc-900 tracking-tight">{t('studio.title')}</h1>
+                    <p className="text-zinc-500 mt-1 italic text-sm md:text-base">"{t('studio.subtitle')}"</p>
                 </div>
-                <div className="flex bg-white border border-zinc-200 p-1.5 rounded-2xl shadow-sm">
+                <div className="flex bg-white border border-zinc-200 p-1.5 rounded-2xl shadow-sm w-full sm:w-auto">
                     <button
                         onClick={() => setActiveTab("diary")}
                         className={cn(
-                            "px-6 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2",
+                            "flex-1 sm:flex-none px-4 md:px-6 py-2 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2",
                             activeTab === "diary" ? "bg-zinc-900 text-white shadow-md shadow-zinc-200" : "text-zinc-500 hover:text-zinc-900"
                         )}
                     >
@@ -40,7 +40,7 @@ export default function StudioPage() {
                     <button
                         onClick={() => setActiveTab("poetry")}
                         className={cn(
-                            "px-6 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2",
+                            "flex-1 sm:flex-none px-4 md:px-6 py-2 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2",
                             activeTab === "poetry" ? "bg-zinc-900 text-white shadow-md shadow-zinc-200" : "text-zinc-500 hover:text-zinc-900"
                         )}
                     >
@@ -50,7 +50,7 @@ export default function StudioPage() {
                 </div>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 min-h-[600px]">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6 min-h-[500px] md:min-h-[600px]">
                 {/* Left: AI Hints & Context */}
                 <aside className="lg:col-span-1 space-y-6">
                     <div className="bg-zinc-900 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden group">
@@ -107,28 +107,30 @@ export default function StudioPage() {
                         ></textarea>
                     </div>
 
-                    <div className="p-6 bg-zinc-50/80 border-t border-zinc-100 flex items-center justify-between">
+                    <div className="p-4 md:p-6 bg-zinc-50/80 border-t border-zinc-100 flex flex-wrap items-center justify-between gap-3">
                         <div className="flex items-center gap-2">
-                            <button className="px-5 py-2.5 bg-zinc-900 text-white rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-zinc-800 transition-all shadow-md shadow-zinc-200 active:scale-[0.98]">
+                            <button className="px-4 md:px-5 py-2 md:py-2.5 bg-zinc-900 text-white rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-zinc-800 transition-all shadow-md shadow-zinc-200 active:scale-[0.98]">
                                 <Save className="w-4 h-4" />
                                 {t('common.save')}
                             </button>
                             {activeTab === "poetry" ? (
-                                <button className="px-5 py-2.5 bg-white border border-zinc-200 text-zinc-900 rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-zinc-50 transition-all active:scale-[0.98]">
+                                <button className="px-4 md:px-5 py-2 md:py-2.5 bg-white border border-zinc-200 text-zinc-900 rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-zinc-50 transition-all active:scale-[0.98]">
                                     <Wand2 className="w-4 h-4 text-purple-500" />
-                                    {t('studio.generatePoetry')}
+                                    <span className="hidden sm:inline">{t('studio.generatePoetry')}</span>
+                                    <span className="sm:hidden">生成</span>
                                 </button>
                             ) : (
-                                <button className="px-5 py-2.5 bg-white border border-zinc-200 text-zinc-900 rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-zinc-50 transition-all active:scale-[0.98]">
+                                <button className="px-4 md:px-5 py-2 md:py-2.5 bg-white border border-zinc-200 text-zinc-900 rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-zinc-50 transition-all active:scale-[0.98]">
                                     <Wand2 className="w-4 h-4 text-zinc-400" />
-                                    {t('studio.generatePolish')}
+                                    <span className="hidden sm:inline">{t('studio.generatePolish')}</span>
+                                    <span className="sm:hidden">润色</span>
                                 </button>
                             )}
                         </div>
 
-                        <button className="px-5 py-2.5 text-zinc-500 hover:text-zinc-900 text-sm font-medium flex items-center gap-2 transition-colors group">
+                        <button className="px-4 md:px-5 py-2 md:py-2.5 text-zinc-500 hover:text-zinc-900 text-sm font-medium flex items-center gap-2 transition-colors group">
                             <Download className="w-4 h-4 text-zinc-400 group-hover:text-zinc-900 transition-colors" />
-                            {t('common.export')}
+                            <span className="hidden sm:inline">{t('common.export')}</span>
                         </button>
                     </div>
                 </main>

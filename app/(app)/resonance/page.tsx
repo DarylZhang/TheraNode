@@ -29,6 +29,7 @@ export default function ResonancePage() {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [inputValue, setInputValue] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [showSessionList, setShowSessionList] = useState(false);
     const abortControllerRef = useRef<AbortController | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -131,17 +132,39 @@ export default function ResonancePage() {
     };
 
     return (
-        <div className="h-[calc(100vh-128px)] flex gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700 text-zinc-900">
+        <div className="h-[calc(100dvh-128px)] md:h-[calc(100vh-128px)] flex flex-col md:flex-row gap-3 md:gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700 text-zinc-900">
+            {/* 移动端会话列表遮罩 */}
+            {showSessionList && (
+                <div
+                    className="fixed inset-0 bg-black/30 z-30 md:hidden"
+                    onClick={() => setShowSessionList(false)}
+                />
+            )}
+
             {/* Session List */}
-            <aside className="w-72 bg-white border border-zinc-200 rounded-3xl overflow-hidden flex flex-col shadow-sm">
+            <aside className={cn(
+                "bg-white border border-zinc-200 rounded-3xl overflow-hidden flex flex-col shadow-sm",
+                "md:w-72 md:flex md:static md:z-auto",
+                "fixed bottom-24 left-4 right-4 z-40 max-h-[60vh] md:max-h-none",
+                "transition-all duration-300 ease-in-out",
+                showSessionList ? "flex opacity-100 translate-y-0" : "hidden md:flex"
+            )}>
                 <div className="p-5 border-b border-zinc-100 flex items-center justify-between">
                     <h2 className="font-bold text-zinc-900">{t('resonance.sessionList')}</h2>
-                    <button
-                        onClick={createNewSession}
-                        className="p-2 hover:bg-zinc-100 rounded-xl transition-colors cursor-pointer"
-                    >
-                        <Plus className="w-4 h-4 text-zinc-500" />
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={createNewSession}
+                            className="p-2 hover:bg-zinc-100 rounded-xl transition-colors cursor-pointer"
+                        >
+                            <Plus className="w-4 h-4 text-zinc-500" />
+                        </button>
+                        <button
+                            onClick={() => setShowSessionList(false)}
+                            className="md:hidden p-2 hover:bg-zinc-100 rounded-xl transition-colors"
+                        >
+                            <Square className="w-4 h-4 text-zinc-400" />
+                        </button>
+                    </div>
                 </div>
                 <div className="flex-1 overflow-y-auto">
                     {sessions.length === 0 ? (
@@ -157,6 +180,7 @@ export default function ResonancePage() {
                                     onClick={() => {
                                         setCurrentSessionId(session.id);
                                         setMessages([]);
+                                        setShowSessionList(false);
                                     }}
                                     className={cn(
                                         "p-4 rounded-2xl cursor-pointer transition-all",
@@ -182,15 +206,23 @@ export default function ResonancePage() {
             </aside>
 
             {/* Chat Window */}
-            <main className="flex-1 bg-white border border-zinc-200 rounded-3xl flex flex-col overflow-hidden shadow-sm">
+            <main className="flex-1 bg-white border border-zinc-200 rounded-3xl flex flex-col overflow-hidden shadow-sm min-h-0">
                 {/* Header */}
-                <div className="p-5 border-b border-zinc-100 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-zinc-900 rounded-2xl flex items-center justify-center text-white">
-                            <Sparkles className="w-5 h-5" />
+                <div className="p-4 md:p-5 border-b border-zinc-100 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                        {/* 移动端打开会话列表按钮 */}
+                        <button
+                            onClick={() => setShowSessionList(true)}
+                            className="md:hidden p-2 hover:bg-zinc-100 rounded-xl transition-colors shrink-0"
+                            aria-label="查看会话"
+                        >
+                            <Plus className="w-4 h-4 text-zinc-500" />
+                        </button>
+                        <div className="w-9 h-9 md:w-10 md:h-10 bg-zinc-900 rounded-2xl flex items-center justify-center text-white shrink-0">
+                            <Sparkles className="w-4 h-4 md:w-5 md:h-5" />
                         </div>
-                        <div>
-                            <h2 className="font-bold text-zinc-900">
+                        <div className="min-w-0">
+                            <h2 className="font-bold text-zinc-900 truncate text-sm md:text-base">
                                 {currentSessionId
                                     ? sessions.find(s => s.id === currentSessionId)?.title
                                     : t('resonance.aiDialogue')}
@@ -201,13 +233,22 @@ export default function ResonancePage() {
                             </p>
                         </div>
                     </div>
-                    <button className="p-2 hover:bg-zinc-100 rounded-xl transition-colors cursor-pointer">
-                        <MoreVertical className="w-5 h-5 text-zinc-400" />
-                    </button>
+                    <div className="flex items-center gap-2 shrink-0">
+                        <button
+                            onClick={createNewSession}
+                            className="md:hidden p-2 hover:bg-zinc-100 rounded-xl transition-colors"
+                            aria-label="新建会话"
+                        >
+                            <Sparkles className="w-4 h-4 text-zinc-500" />
+                        </button>
+                        <button className="p-2 hover:bg-zinc-100 rounded-xl transition-colors cursor-pointer">
+                            <MoreVertical className="w-5 h-5 text-zinc-400" />
+                        </button>
+                    </div>
                 </div>
 
                 {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-6 flex flex-col">
+                <div className="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col">
                     {messages.length === 0 && (
                         <div className="flex-1 flex flex-col items-center justify-center text-center opacity-20">
                             <Sparkles className="w-12 h-12 mb-4" />
@@ -246,7 +287,7 @@ export default function ResonancePage() {
                 </div>
 
                 {/* Footer / Input Area */}
-                <div className="p-6 border-t border-zinc-100 bg-zinc-50/50">
+                <div className="p-3 md:p-6 border-t border-zinc-100 bg-zinc-50/50">
                     <form onSubmit={handleFormSubmit} className="relative flex items-center">
                         <input
                             ref={inputRef}
