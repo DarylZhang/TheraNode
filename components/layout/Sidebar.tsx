@@ -7,6 +7,7 @@ import {
     MessageSquare,
     PenTool,
     History,
+    Users,
     ChevronRight,
     X
 } from "lucide-react";
@@ -27,6 +28,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         { icon: MessageSquare, label: t('sidebar.aiDialogue'), href: "/resonance" },
         { icon: PenTool, label: t('studio.title'), href: "/studio" },
         { icon: History, label: t('common.records'), href: "/records" },
+        { icon: Users, label: t('sidebar.community'), href: "/community" },
     ];
 
     return (
