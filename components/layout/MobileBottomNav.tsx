@@ -6,7 +6,7 @@ import {
     LayoutDashboard,
     MessageSquare,
     PenTool,
-    History
+    Users
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n/I18nContext";
@@ -19,7 +19,7 @@ export function MobileBottomNav() {
         { icon: LayoutDashboard, label: t('common.dashboard'), href: "/dashboard" },
         { icon: MessageSquare, label: t('sidebar.aiDialogue'), href: "/resonance" },
         { icon: PenTool, label: t('studio.title'), href: "/studio" },
-        { icon: History, label: t('common.records'), href: "/records" },
+        { icon: Users, label: t('sidebar.community'), href: "/community" },
     ];
 
     return (

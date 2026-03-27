@@ -6,7 +6,7 @@ import {
     LayoutDashboard,
     MessageSquare,
     PenTool,
-    History,
+    // History,
     Users,
     ChevronRight,
     X
@@ -27,7 +27,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         { icon: LayoutDashboard, label: t('common.dashboard'), href: "/dashboard" },
         { icon: MessageSquare, label: t('sidebar.aiDialogue'), href: "/resonance" },
         { icon: PenTool, label: t('studio.title'), href: "/studio" },
-        { icon: History, label: t('common.records'), href: "/records" },
+        // { icon: History, label: t('common.records'), href: "/records" },
         { icon: Users, label: t('sidebar.community'), href: "/community" },
     ];
 
