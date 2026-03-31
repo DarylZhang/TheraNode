@@ -6,8 +6,9 @@ import {
     LayoutDashboard,
     MessageSquare,
     PenTool,
-    // History,
     Users,
+    Crown,
+    Mail,
     ChevronRight,
     X
 } from "lucide-react";
@@ -27,8 +28,8 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         { icon: LayoutDashboard, label: t('common.dashboard'), href: "/dashboard" },
         { icon: MessageSquare, label: t('sidebar.aiDialogue'), href: "/resonance" },
         { icon: PenTool, label: t('studio.title'), href: "/studio" },
-        // { icon: History, label: t('common.records'), href: "/records" },
         { icon: Users, label: t('sidebar.community'), href: "/community" },
+        { icon: Crown, label: t('common.membership'), href: "/membership" },
     ];
 
     return (
@@ -84,11 +85,19 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                     })}
                 </nav>
 
-                <div className="p-4 mt-auto">
+                <div className="p-4 mt-auto space-y-2">
                     <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
                         <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">{t('sidebar.inspiration')}</p>
                         <p className="text-sm text-zinc-600 italic">"{t('sidebar.inspirationQuote')}"</p>
                     </div>
+                    <Link
+                        href="/contact"
+                        onClick={onClose}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"
+                    >
+                        <Mail className="w-4 h-4 text-zinc-400" />
+                        {t('common.contact')}
+                    </Link>
                 </div>
             </aside>
         </>

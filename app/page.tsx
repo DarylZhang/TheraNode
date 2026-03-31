@@ -42,7 +42,10 @@ export default function LandingPage() {
             </button>
           </div>
 
-          <Link href="/dashboard" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors whitespace-nowrap">
+          <Link href="/contact" className="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors whitespace-nowrap hidden sm:inline">
+            {t('common.contact')}
+          </Link>
+          <Link href="/dashboard" className="text-sm font-medium bg-zinc-900 text-white px-4 py-2 rounded-full hover:bg-zinc-700 transition-colors whitespace-nowrap">
             {t('landing.enterApp')}
           </Link>
         </div>
