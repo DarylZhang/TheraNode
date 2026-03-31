@@ -218,7 +218,7 @@ export default function RegisterPage() {
                   type="button"
                   onClick={handleSendCode}
                   disabled={codeSending || countdown > 0 || !target.trim()}
-                  className="px-4 py-3 bg-zinc-100 hover:bg-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl text-sm font-medium whitespace-nowrap transition-colors"
+                  className="px-4 py-3 bg-zinc-900 text-white hover:bg-zinc-700 disabled:bg-zinc-200 disabled:text-zinc-400 disabled:cursor-not-allowed rounded-xl text-sm font-medium whitespace-nowrap transition-colors"
                 >
                   {countdown > 0 ? `${countdown}s` : codeSending ? "发送中..." : "发送验证码"}
                 </button>
