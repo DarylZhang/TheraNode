@@ -5,7 +5,6 @@ import {
   Plus,
   Send,
   MoreVertical,
-  Sparkles,
   Square,
   Trash2,
   RefreshCw,
@@ -13,6 +12,7 @@ import {
   Download,
   Copy,
   Check,
+  Heart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n/I18nContext";
@@ -30,8 +30,11 @@ interface LocalMessage {
   content: string;
 }
 
-export default function ResonancePage() {
-  const { t } = useI18n();
+const GUIDED_TOPICS_ZH = ["焦虑与控制感", "失去与悲伤", "自我接纳", "关系与边界"];
+const GUIDED_TOPICS_EN = ["Anxiety & Control", "Loss & Grief", "Self-Acceptance", "Relationships & Boundaries"];
+
+export default function ResonanceSpacePage() {
+  const { t, lang } = useI18n();
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [currentSession, setCurrentSession] = useState<ChatSession | null>(null);
   const [messages, setMessages] = useState<LocalMessage[]>([]);
@@ -47,6 +50,8 @@ export default function ResonancePage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const moreMenuRef = useRef<HTMLDivElement>(null);
 
+  const guidedTopics = lang === "zh" ? GUIDED_TOPICS_ZH : GUIDED_TOPICS_EN;
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -55,7 +60,6 @@ export default function ResonancePage() {
     scrollToBottom();
   }, [messages, isLoading]);
 
-  // Close more menu when clicking outside
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (moreMenuRef.current && !moreMenuRef.current.contains(e.target as Node)) {
@@ -66,14 +70,12 @@ export default function ResonancePage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Load session list on mount, then auto-create session if none exists
   useEffect(() => {
     getSessions()
       .then(async (page) => {
         const list = page.content;
         setSessions(list);
         if (list.length > 0) {
-          // Auto-load the most recent session
           const latest = list[0];
           setCurrentSession(latest);
           setLoadingMsgs(true);
@@ -92,9 +94,8 @@ export default function ResonancePage() {
             setTimeout(() => inputRef.current?.focus(), 100);
           }
         } else {
-          // Auto-create a new session
           try {
-            const session = await createSession();
+            const session = await createSession(lang === "zh" ? "共振空间会话" : "Resonance Session");
             setSessions([session]);
             setCurrentSession(session);
             setTimeout(() => inputRef.current?.focus(), 100);
@@ -105,7 +106,7 @@ export default function ResonancePage() {
       })
       .catch(() => {})
       .finally(() => setInitializing(false));
-  }, []);
+  }, [lang]);
 
   const loadSessionMessages = async (session: ChatSession) => {
     setCurrentSession(session);
@@ -130,7 +131,7 @@ export default function ResonancePage() {
 
   const handleNewSession = async () => {
     try {
-      const session = await createSession();
+      const session = await createSession(lang === "zh" ? "共振空间会话" : "Resonance Session");
       setSessions((prev) => [session, ...prev]);
       setCurrentSession(session);
       setMessages([]);
@@ -141,14 +142,19 @@ export default function ResonancePage() {
     }
   };
 
+  const handleTopicClick = (topic: string) => {
+    setInputValue(lang === "zh" ? `我想探讨：${topic}` : `I want to explore: ${topic}`);
+    inputRef.current?.focus();
+  };
+
   const handleShareSession = async () => {
     setShowMoreMenu(false);
     const text = messages
-      .map((m) => `${m.role === "user" ? "我" : "AI"}: ${m.content}`)
+      .map((m) => `${m.role === "user" ? (lang === "zh" ? "我" : "Me") : "AI"}: ${m.content}`)
       .join("\n\n");
     try {
       if (navigator.share) {
-        await navigator.share({ title: currentSession?.title ?? "AI对话", text });
+        await navigator.share({ title: currentSession?.title ?? (lang === "zh" ? "共振空间对话" : "Resonance Session"), text });
       } else {
         await navigator.clipboard.writeText(text);
         setCopied(true);
@@ -174,13 +180,13 @@ export default function ResonancePage() {
     setShowMoreMenu(false);
     if (!messages.length) return;
     const content = messages
-      .map((m) => `[${m.role === "user" ? "我" : "AI Assistant"}]\n${m.content}`)
+      .map((m) => `[${m.role === "user" ? (lang === "zh" ? "我" : "Me") : "AI"}]\n${m.content}`)
       .join("\n\n---\n\n");
     const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${currentSession?.title ?? "对话记录"}.txt`;
+    a.download = `${currentSession?.title ?? (lang === "zh" ? "共振记录" : "resonance-record")}.txt`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -243,14 +249,14 @@ export default function ResonancePage() {
         const isNetwork = err instanceof TypeError && err.message.includes("fetch");
         const msg =
           sseError === "RATE_LIMITED"
-            ? "⚠️ AI 请求太频繁，请稍等片刻再试。"
+            ? (lang === "zh" ? "⚠️ AI 请求太频繁，请稍等片刻再试。" : "⚠️ Too many requests. Please wait a moment and try again.")
             : isNetwork
-            ? "⚠️ 网络连接失败，请检查网络后重试。"
+            ? (lang === "zh" ? "⚠️ 网络连接失败，请检查网络后重试。" : "⚠️ Network error. Please check your connection.")
             : status === 429
-            ? "⚠️ AI 请求太频繁，请稍等片刻再试。"
+            ? (lang === "zh" ? "⚠️ AI 请求太频繁，请稍等片刻再试。" : "⚠️ Too many requests. Please wait a moment and try again.")
             : status === 401
-            ? "⚠️ 登录已过期，请重新登录。"
-            : "⚠️ 服务暂时不可用，请稍后重试。如问题持续，请联系我们。";
+            ? (lang === "zh" ? "⚠️ 登录已过期，请重新登录。" : "⚠️ Session expired. Please log in again.")
+            : (lang === "zh" ? "⚠️ 服务暂时不可用，请稍后重试。如问题持续，请联系我们。" : "⚠️ Service temporarily unavailable. Please try again later.");
         setMessages((prev) => {
           const updated = [...prev];
           updated[updated.length - 1] = { role: "assistant", content: msg };
@@ -284,20 +290,41 @@ export default function ResonancePage() {
         )}
       >
         <div className="p-5 border-b border-zinc-100 flex items-center justify-between">
-          <h2 className="font-bold text-zinc-900">{t("resonance.sessionList")}</h2>
+          <div>
+            <h2 className="font-bold text-zinc-900">{t("resonanceSpace.sessionList") ?? "共振记录"}</h2>
+          </div>
           <button
             onClick={handleNewSession}
-            className="p-2 hover:bg-zinc-100 rounded-xl transition-colors cursor-pointer"
-            title="新建会话"
+            className="p-2 hover:bg-purple-50 rounded-xl transition-colors cursor-pointer"
+            title={t("resonanceSpace.newSession") ?? "开启新共振"}
           >
-            <Plus className="w-4 h-4 text-zinc-500" />
+            <Plus className="w-4 h-4 text-purple-500" />
           </button>
         </div>
+
+        {/* Guided Topics */}
+        <div className="p-4 border-b border-zinc-100">
+          <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">
+            {t("resonanceSpace.guidedTopics") ?? "引导主题"}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {guidedTopics.map((topic) => (
+              <button
+                key={topic}
+                onClick={() => handleTopicClick(topic)}
+                className="px-3 py-1.5 text-xs font-medium bg-purple-50 text-purple-700 rounded-xl hover:bg-purple-100 transition-colors"
+              >
+                {topic}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="flex-1 overflow-y-auto">
           {sessions.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center p-6 text-center opacity-40">
-              <Plus className="w-8 h-8 mb-2" />
-              <p className="text-xs">{t("resonance.noSessions") ?? "暂无会话，点击 + 新建"}</p>
+              <Heart className="w-8 h-8 mb-2 text-purple-400" />
+              <p className="text-xs">{t("resonanceSpace.noSessions") ?? "还没有共振记录"}</p>
             </div>
           ) : (
             <div className="p-3 space-y-1">
@@ -308,8 +335,8 @@ export default function ResonancePage() {
                   className={cn(
                     "p-4 rounded-2xl cursor-pointer transition-all group relative",
                     currentSession?.id === session.id
-                      ? "bg-zinc-900 text-white shadow-md"
-                      : "hover:bg-zinc-50 text-zinc-600"
+                      ? "bg-purple-900 text-white shadow-md"
+                      : "hover:bg-purple-50 text-zinc-600"
                   )}
                 >
                   <div className="flex justify-between items-start mb-1 pr-6">
@@ -323,14 +350,13 @@ export default function ResonancePage() {
                   >
                     {new Date(session.updatedAt).toLocaleDateString("zh-CN")}
                   </p>
-                  {/* Delete button */}
                   <button
                     onClick={(e) => handleDeleteSession(session.id, e)}
                     className={cn(
                       "absolute right-3 top-3 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity",
                       currentSession?.id === session.id
                         ? "hover:bg-white/20 text-white/60"
-                        : "hover:bg-zinc-100 text-zinc-400"
+                        : "hover:bg-purple-100 text-zinc-400"
                     )}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -345,39 +371,39 @@ export default function ResonancePage() {
       {/* Chat Window */}
       <main className="flex-1 bg-white border border-zinc-200 rounded-3xl flex flex-col overflow-hidden shadow-sm min-h-0">
         {/* Header */}
-        <div className="p-4 md:p-5 border-b border-zinc-100 flex items-center justify-between gap-3">
+        <div className="p-4 md:p-5 border-b border-zinc-100 flex items-center justify-between gap-3 bg-gradient-to-r from-purple-50 to-white">
           <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => setShowSessionList(true)}
-              className="md:hidden p-2 hover:bg-zinc-100 rounded-xl transition-colors shrink-0"
+              className="md:hidden p-2 hover:bg-purple-100 rounded-xl transition-colors shrink-0"
             >
-              <Plus className="w-4 h-4 text-zinc-500" />
+              <Plus className="w-4 h-4 text-purple-500" />
             </button>
-            <div className="w-9 h-9 md:w-10 md:h-10 bg-zinc-900 rounded-2xl flex items-center justify-center text-white shrink-0">
-              <Sparkles className="w-4 h-4 md:w-5 md:h-5" />
+            <div className="w-9 h-9 md:w-10 md:h-10 bg-gradient-to-br from-purple-600 to-purple-900 rounded-2xl flex items-center justify-center text-white shrink-0">
+              <Heart className="w-4 h-4 md:w-5 md:h-5" />
             </div>
             <div className="min-w-0">
               <h2 className="font-bold text-zinc-900 truncate text-sm md:text-base">
-                {currentSession ? currentSession.title : t("resonance.aiDialogue")}
+                {currentSession ? currentSession.title : (t("resonanceSpace.title") ?? "共振空间")}
               </h2>
-              <p className="text-[10px] text-zinc-400 flex items-center gap-1 uppercase tracking-widest leading-none mt-1">
-                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                {t("resonance.activeCopilot")}
+              <p className="text-[10px] text-purple-500 flex items-center gap-1 uppercase tracking-widest leading-none mt-1">
+                <span className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse" />
+                {t("resonanceSpace.activeCopilot") ?? "共振模式 · 在线"}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {copied && (
               <span className="text-xs text-green-600 font-medium flex items-center gap-1">
-                <Check className="w-3.5 h-3.5" />已复制
+                <Check className="w-3.5 h-3.5" />{lang === "zh" ? "已复制" : "Copied"}
               </span>
             )}
             <button
               onClick={handleNewSession}
-              className="p-2 hover:bg-zinc-100 rounded-xl transition-colors"
-              title="新建会话"
+              className="p-2 hover:bg-purple-50 rounded-xl transition-colors"
+              title={t("resonanceSpace.newSession") ?? "开启新共振"}
             >
-              <Plus className="w-4 h-4 text-zinc-500" />
+              <Plus className="w-4 h-4 text-purple-500" />
             </button>
             <div className="relative" ref={moreMenuRef}>
               <button
@@ -393,14 +419,14 @@ export default function ResonancePage() {
                     className="w-full flex items-center gap-3 px-4 py-3 text-sm text-zinc-700 hover:bg-zinc-50 transition-colors"
                   >
                     <Share2 className="w-4 h-4 text-zinc-400" />
-                    {t("resonance.shareSession") ?? "分享对话"}
+                    {lang === "zh" ? "分享对话" : "Share"}
                   </button>
                   <button
                     onClick={handleCopyLink}
                     className="w-full flex items-center gap-3 px-4 py-3 text-sm text-zinc-700 hover:bg-zinc-50 transition-colors"
                   >
                     <Copy className="w-4 h-4 text-zinc-400" />
-                    {t("resonance.copyLink") ?? "复制链接"}
+                    {lang === "zh" ? "复制链接" : "Copy Link"}
                   </button>
                   <div className="h-px bg-zinc-100 mx-2" />
                   <button
@@ -409,7 +435,7 @@ export default function ResonancePage() {
                     className="w-full flex items-center gap-3 px-4 py-3 text-sm text-zinc-700 hover:bg-zinc-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <Download className="w-4 h-4 text-zinc-400" />
-                    {t("resonance.exportSession") ?? "导出记录"}
+                    {lang === "zh" ? "导出记录" : "Export"}
                   </button>
                 </div>
               )}
@@ -421,21 +447,31 @@ export default function ResonancePage() {
         <div className="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col">
           {initializing && !currentSession && (
             <div className="flex-1 flex flex-col items-center justify-center text-center opacity-40">
-              <RefreshCw className="w-8 h-8 mb-3 animate-spin" />
-              <p className="text-sm">正在准备对话...</p>
+              <RefreshCw className="w-8 h-8 mb-3 animate-spin text-purple-400" />
+              <p className="text-sm">{lang === "zh" ? "正在准备共振空间..." : "Preparing resonance space..."}</p>
             </div>
           )}
           {!initializing && !currentSession && (
-            <div className="flex-1 flex flex-col items-center justify-center text-center opacity-20">
-              <Sparkles className="w-12 h-12 mb-4" />
+            <div className="flex-1 flex flex-col items-center justify-center text-center opacity-30">
+              <Heart className="w-12 h-12 mb-4 text-purple-400" />
               <p className="text-sm italic">
-                {t("resonance.startPrompt") ?? "点击左侧 + 新建一个会话开始对话"}
+                {t("resonanceSpace.startPrompt") ?? "在这里，你可以深度探索内心的声音..."}
               </p>
             </div>
           )}
           {loadingMsgs && (
             <div className="flex-1 flex items-center justify-center opacity-40">
-              <RefreshCw className="w-5 h-5 animate-spin" />
+              <RefreshCw className="w-5 h-5 animate-spin text-purple-400" />
+            </div>
+          )}
+          {!loadingMsgs && messages.length === 0 && currentSession && (
+            <div className="flex-1 flex flex-col items-center justify-center text-center opacity-30 px-4">
+              <Heart className="w-10 h-10 mb-3 text-purple-400" />
+              <p className="text-sm italic leading-relaxed">
+                {lang === "zh"
+                  ? "在这里，没有评判，只有陪伴。\n说说你此刻的感受吧。"
+                  : "Here, no judgment — only presence.\nShare how you feel right now."}
+              </p>
             </div>
           )}
           <div className="space-y-6">
@@ -451,21 +487,21 @@ export default function ResonancePage() {
                   className={cn(
                     "px-5 py-3.5 rounded-2xl text-sm leading-relaxed",
                     msg.role === "user"
-                      ? "bg-zinc-900 text-white rounded-br-none shadow-md"
-                      : "bg-zinc-50 text-zinc-800 rounded-bl-none border border-zinc-100 shadow-sm"
+                      ? "bg-purple-900 text-white rounded-br-none shadow-md"
+                      : "bg-purple-50 text-zinc-800 rounded-bl-none border border-purple-100 shadow-sm"
                   )}
                 >
                   {msg.content || (
                     <span className="flex gap-1 items-center">
-                      <Sparkles className="w-3.5 h-3.5 text-zinc-400 animate-pulse mr-1" />
-                      <span className="w-1.5 h-1.5 bg-zinc-300 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                      <span className="w-1.5 h-1.5 bg-zinc-300 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                      <span className="w-1.5 h-1.5 bg-zinc-300 rounded-full animate-bounce" />
+                      <Heart className="w-3.5 h-3.5 text-purple-400 animate-pulse mr-1" />
+                      <span className="w-1.5 h-1.5 bg-purple-300 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                      <span className="w-1.5 h-1.5 bg-purple-300 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                      <span className="w-1.5 h-1.5 bg-purple-300 rounded-full animate-bounce" />
                     </span>
                   )}
                 </div>
                 <span className="text-[10px] text-zinc-400 mt-2 px-1">
-                  {msg.role === "assistant" ? "AI Assistant" : "You"} · Just now
+                  {msg.role === "assistant" ? "共振 AI" : (lang === "zh" ? "你" : "You")} · Just now
                 </span>
               </div>
             ))}
@@ -474,7 +510,7 @@ export default function ResonancePage() {
         </div>
 
         {/* Input */}
-        <div className="p-3 md:p-6 border-t border-zinc-100 bg-zinc-50/50">
+        <div className="p-3 md:p-6 border-t border-purple-100 bg-purple-50/30">
           <form onSubmit={handleFormSubmit} className="relative flex items-center">
             <input
               ref={inputRef}
@@ -483,17 +519,17 @@ export default function ResonancePage() {
               onChange={(e) => setInputValue(e.target.value)}
               placeholder={
                 currentSession
-                  ? (t("resonance.inputPlaceholder") ?? "分享你的感受...")
-                  : (t("resonance.selectSessionPrompt") ?? "请先点击 + 新建会话")
+                  ? (t("resonanceSpace.inputPlaceholder") ?? "说出你此刻内心深处的感受...")
+                  : (t("resonanceSpace.selectSessionPrompt") ?? "请先新建一个共振会话")
               }
               disabled={!currentSession || loadingMsgs}
-              className="w-full bg-white border border-zinc-200 rounded-2xl py-3.5 pl-5 pr-14 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full bg-white border border-purple-200 rounded-2xl py-3.5 pl-5 pr-14 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-400 transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
             />
             {isLoading ? (
               <button
                 type="button"
                 onClick={stopGeneration}
-                className="absolute right-2 p-2 bg-zinc-900 text-white rounded-xl hover:bg-zinc-800 transition-colors"
+                className="absolute right-2 p-2 bg-purple-900 text-white rounded-xl hover:bg-purple-800 transition-colors"
               >
                 <Square className="w-4 h-4 fill-current" />
               </button>
@@ -501,7 +537,7 @@ export default function ResonancePage() {
               <button
                 type="submit"
                 disabled={!currentSession || !inputValue.trim() || loadingMsgs}
-                className="absolute right-2 p-2 bg-zinc-900 text-white rounded-xl hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="absolute right-2 p-2 bg-purple-900 text-white rounded-xl hover:bg-purple-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Send className="w-4 h-4" />
               </button>

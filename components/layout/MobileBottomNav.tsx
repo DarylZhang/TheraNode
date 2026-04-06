@@ -26,7 +26,7 @@ export function MobileBottomNav() {
         <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-t border-zinc-200 safe-area-pb">
             <div className="flex items-center justify-around px-1 py-2">
                 {navItems.map((item) => {
-                    const isActive = pathname === item.href || (!item.href.includes('?') && pathname.startsWith(item.href) && item.href !== "/");
+                    const isActive = pathname === item.href || (!item.href.includes('?') && pathname.startsWith(item.href + "/") && item.href !== "/");
                     return (
                         <Link
                             key={item.href}

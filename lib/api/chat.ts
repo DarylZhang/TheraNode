@@ -53,7 +53,9 @@ export async function sendMessageStream(
   });
 
   if (!res.ok || !res.body) {
-    throw new Error(`HTTP ${res.status}`);
+    const err = new Error(`HTTP ${res.status}`);
+    (err as Error & { status?: number }).status = res.status;
+    throw err;
   }
 
   const reader = res.body.getReader();
@@ -72,10 +74,16 @@ export async function sendMessageStream(
         const jsonStr = line.startsWith('data:') ? line.slice(5).trim() : line.trim();
         if (!jsonStr) continue;
         const obj = JSON.parse(jsonStr);
+        if (obj.error) {
+          const err = new Error(obj.error);
+          (err as Error & { sseError?: string }).sseError = obj.error;
+          throw err;
+        }
         if (obj.done) return;
         if (obj.delta) onDelta(obj.delta);
-      } catch {
-        // skip non-JSON lines
+      } catch (e) {
+        // Re-throw structured SSE errors, skip malformed lines
+        if ((e as Error & { sseError?: string }).sseError) throw e;
       }
     }
   }

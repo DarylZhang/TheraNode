@@ -10,23 +10,54 @@ import {
     Crown,
     Mail,
     ChevronRight,
-    X
+    X,
+    Heart,
+    RefreshCw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n/I18nContext";
+import { useState } from "react";
 
 interface SidebarProps {
     isOpen?: boolean;
     onClose?: () => void;
 }
 
+const INSPIRATION_QUOTES_ZH = [
+    "万物皆有裂痕，那是光照进来的地方。",
+    "你不需要修复自己，你只需要爱自己。",
+    "每一次呼吸，都是一次重新开始的机会。",
+    "内心的平静，是你随时可以回家的地方。",
+    "慢下来，感受此刻。你已经做得够好了。",
+    "痛苦不是终点，它是你变得更深刻的路途。",
+    "允许自己感受，这本身就是一种勇气。",
+];
+
+const INSPIRATION_QUOTES_EN = [
+    "There is a crack in everything, that's how the light gets in.",
+    "You don't need to fix yourself. You just need to love yourself.",
+    "Every breath is a chance to begin again.",
+    "Inner peace is a home you can always return to.",
+    "Slow down. Feel this moment. You are enough.",
+    "Pain is not the end — it's the path to greater depth.",
+    "Allowing yourself to feel is an act of courage.",
+];
+
 export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
     const pathname = usePathname();
-    const { t } = useI18n();
+    const { t, lang } = useI18n();
+    const [quoteIndex, setQuoteIndex] = useState(0);
+
+    const quotes = lang === "zh" ? INSPIRATION_QUOTES_ZH : INSPIRATION_QUOTES_EN;
+
+    const handleRefreshQuote = () => {
+        setQuoteIndex((prev) => (prev + 1) % quotes.length);
+    };
 
     const menuItems = [
         { icon: LayoutDashboard, label: t('common.dashboard'), href: "/dashboard" },
         { icon: MessageSquare, label: t('sidebar.aiDialogue'), href: "/resonance" },
+        { icon: Heart, label: t('sidebar.resonanceSpace') ?? "共振空间", href: "/resonance-space" },
         { icon: PenTool, label: t('studio.title'), href: "/studio" },
         { icon: Users, label: t('sidebar.community'), href: "/community" },
         { icon: Crown, label: t('common.membership'), href: "/membership" },
@@ -59,9 +90,9 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                     </button>
                 </div>
 
-                <nav className="flex-1 p-4 space-y-1">
+                <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
                     {menuItems.map((item) => {
-                        const isActive = pathname === item.href || (item.href.includes('?') && pathname === item.href.split('?')[0]);
+                        const isActive = pathname === item.href || (item.href.includes('?') && pathname === item.href.split('?')[0]) || (pathname.startsWith(item.href + "/") && item.href !== "/");
 
                         return (
                             <Link
@@ -71,12 +102,21 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                                 className={cn(
                                     "flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all group",
                                     isActive
-                                        ? "bg-zinc-900 text-white shadow-sm"
+                                        ? item.href === "/resonance-space"
+                                            ? "bg-purple-900 text-white shadow-sm"
+                                            : "bg-zinc-900 text-white shadow-sm"
                                         : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
                                 )}
                             >
                                 <div className="flex items-center gap-3">
-                                    <item.icon className={cn("w-4 h-4", isActive ? "text-white" : "text-zinc-400 group-hover:text-zinc-900")} />
+                                    <item.icon className={cn(
+                                        "w-4 h-4",
+                                        isActive
+                                            ? "text-white"
+                                            : item.href === "/resonance-space"
+                                                ? "text-purple-400 group-hover:text-purple-600"
+                                                : "text-zinc-400 group-hover:text-zinc-900"
+                                    )} />
                                     {item.label}
                                 </div>
                                 {isActive && <ChevronRight className="w-4 h-4 text-white/50" />}
@@ -87,8 +127,21 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
 
                 <div className="p-4 mt-auto space-y-2">
                     <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
-                        <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">{t('sidebar.inspiration')}</p>
-                        <p className="text-sm text-zinc-600 italic">"{t('sidebar.inspirationQuote')}"</p>
+                        <div className="flex items-center justify-between mb-2">
+                            <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                                {t('sidebar.inspiration')}
+                            </p>
+                            <button
+                                onClick={handleRefreshQuote}
+                                className="p-1 rounded-lg hover:bg-zinc-200 transition-colors text-zinc-400 hover:text-zinc-600"
+                                title={t('sidebar.refreshInspiration') ?? "换一句"}
+                            >
+                                <RefreshCw className="w-3 h-3" />
+                            </button>
+                        </div>
+                        <p className="text-sm text-zinc-600 italic leading-relaxed">
+                            &ldquo;{quotes[quoteIndex]}&rdquo;
+                        </p>
                     </div>
                     <Link
                         href="/contact"

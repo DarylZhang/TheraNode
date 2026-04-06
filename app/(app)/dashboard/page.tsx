@@ -120,9 +120,9 @@ export default function DashboardPage() {
             <p className="text-xl font-medium leading-relaxed mb-8 flex-1">
               &ldquo;{t("dashboard.aiRecText")}&rdquo;
             </p>
-            <Link href="/resonance">
+            <Link href="/resonance-space">
               <button className="px-6 py-2.5 bg-white text-zinc-900 rounded-xl font-medium flex items-center gap-2 hover:bg-zinc-100 transition-colors w-fit">
-                {t("dashboard.enterResonance")}
+                {t("dashboard.enterResonanceSpace") ?? "进入共振空间"}
               </button>
             </Link>
           </div>

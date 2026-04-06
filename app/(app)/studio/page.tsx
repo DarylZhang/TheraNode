@@ -27,6 +27,7 @@ export default function StudioPage() {
   const [loadingList, setLoadingList] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savedMsg, setSavedMsg] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const [isNew, setIsNew] = useState(false);
 
   const loadEntries = useCallback(async (type: StudioEntryType) => {
@@ -90,7 +91,9 @@ export default function StudioPage() {
         setSelected(updated);
       }
       setSavedMsg(true);
-      setTimeout(() => setSavedMsg(false), 2000);
+      setShowToast(true);
+      setTimeout(() => setSavedMsg(false), 2500);
+      setTimeout(() => setShowToast(false), 4000);
     } catch {
       // ignore
     } finally {
@@ -121,6 +124,16 @@ export default function StudioPage() {
 
   return (
     <div className="space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* Save Success Toast */}
+      <div
+        className={cn(
+          "fixed top-20 left-1/2 -translate-x-1/2 z-[200] flex items-center gap-2.5 px-5 py-3 bg-zinc-900 text-white rounded-2xl shadow-xl transition-all duration-500",
+          showToast ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4 pointer-events-none"
+        )}
+      >
+        <CheckCircle className="w-4 h-4 text-green-400 shrink-0" />
+        <span className="text-sm font-medium">保存成功！</span>
+      </div>
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-zinc-900 tracking-tight">
