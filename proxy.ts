@@ -29,7 +29,9 @@ export function proxy(request: NextRequest) {
   }
 
   if (isAuthPage && token) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    const from = request.nextUrl.searchParams.get('from');
+    const dest = from && from.startsWith('/') ? from : '/dashboard';
+    return NextResponse.redirect(new URL(dest, request.url));
   }
 
   return NextResponse.next();

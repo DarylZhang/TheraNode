@@ -31,7 +31,7 @@ function LoginForm() {
     try {
       const data = await login(account.trim(), password);
       setUser(data.user);
-      router.replace(redirectTo);
+      window.location.href = redirectTo;
     } catch (err) {
       if (err instanceof ApiError) setError(err.message);
       else setError("登录失败，请稍后重试");
