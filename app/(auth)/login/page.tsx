@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Sparkles, Mail, Lock, AlertCircle } from "lucide-react";
 import { login, GOOGLE_OAUTH_URL } from "@/lib/api/auth";
@@ -10,11 +10,18 @@ import { ApiError } from "@/lib/api/client";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const setUser = useAuthStore((s) => s.setUser);
   const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [redirectTo, setRedirectTo] = useState("/dashboard");
+
+  useEffect(() => {
+    const redirect = searchParams.get("redirect");
+    if (redirect) setRedirectTo(redirect);
+  }, [searchParams]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -24,7 +31,7 @@ export default function LoginPage() {
     try {
       const data = await login(account.trim(), password);
       setUser(data.user);
-      router.replace("/dashboard");
+      router.replace(redirectTo);
     } catch (err) {
       if (err instanceof ApiError) setError(err.message);
       else setError("登录失败，请稍后重试");

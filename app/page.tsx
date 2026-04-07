@@ -4,9 +4,18 @@ import Link from "next/link";
 import { ArrowRight, Sparkles, LayoutDashboard, MessageSquare, PenTool, Users, MessageCircle, ChevronRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n/I18nContext";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useEffect } from "react";
 
 export default function LandingPage() {
   const { t, lang, setLang } = useI18n();
+  const { user, hydrate } = useAuthStore();
+
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
+
+  const communityHref = user ? "/community" : "/login?redirect=/community";
 
   return (
     <div className="min-h-screen bg-zinc-50 flex flex-col font-sans">
@@ -44,6 +53,9 @@ export default function LandingPage() {
 
           <Link href="/contact" className="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors whitespace-nowrap hidden sm:inline">
             {t('common.contact')}
+          </Link>
+          <Link href={communityHref} className="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors whitespace-nowrap hidden sm:inline">
+            {lang === "zh" ? "社区" : "Community"}
           </Link>
           <Link href="/dashboard" className="text-sm font-medium bg-zinc-900 text-white px-4 py-2 rounded-full hover:bg-zinc-700 transition-colors whitespace-nowrap">
             {t('landing.enterApp')}
