@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
 import { Navbar } from "./Navbar";
 import { Sidebar } from "./Sidebar";
 import { MobileBottomNav } from "./MobileBottomNav";
@@ -9,21 +8,13 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const router = useRouter();
-    const pathname = usePathname();
-    const { user, isHydrated, hydrate } = useAuthStore();
+    const { isHydrated, hydrate } = useAuthStore();
 
     useEffect(() => {
         hydrate();
     }, [hydrate]);
 
-    useEffect(() => {
-        if (isHydrated && !user) {
-            router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
-        }
-    }, [isHydrated, user, pathname, router]);
-
-    if (!isHydrated || !user) {
+    if (!isHydrated) {
         return (
             <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
                 <div className="w-6 h-6 border-2 border-zinc-300 border-t-zinc-700 rounded-full animate-spin" />

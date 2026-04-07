@@ -19,8 +19,8 @@ function LoginForm() {
   const [redirectTo, setRedirectTo] = useState("/dashboard");
 
   useEffect(() => {
-    const redirect = searchParams.get("redirect");
-    if (redirect) setRedirectTo(redirect);
+    const destination = searchParams.get("from") ?? searchParams.get("redirect");
+    if (destination) setRedirectTo(destination);
   }, [searchParams]);
 
   async function handleSubmit(e: React.FormEvent) {

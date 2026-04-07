@@ -13,7 +13,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   isHydrated: false,
 
   setUser: (user) => {
-    set({ user });
+    set({ user, isHydrated: true });
     if (typeof window !== 'undefined') {
       if (user) localStorage.setItem('currentUser', JSON.stringify(user));
       else localStorage.removeItem('currentUser');
